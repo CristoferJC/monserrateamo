@@ -23,14 +23,14 @@ const photosData = [
         title: "En el polvorín",
         date: "7 de Diciembre, 2024",
         description: "",
-        image: "fotos/3.JPG"
+        image: "fotos/3.jpg"
     },
     {
         id: 4,
         title: "En tu casa",
         date: "9 de Diciembre, 2024",
         description: "Cuando me invitaste por primera vez a tu casa",
-        image: "fotos/4.JPG"
+        image: "fotos/4.jpg"
     },
     {
         id: 5,
@@ -58,7 +58,7 @@ const photosData = [
         title: "Paseito",
         date: "28 de Diciembre, 2024",
         description: "Cuando fuimos a pasear a la playa",
-        image: "fotos/8.JPG"
+        image: "fotos/8.jpg"
     },
     {
         id: 9,
@@ -72,7 +72,7 @@ const photosData = [
         title: "Año nuevooo",
         date: "31 de Diciembre, 2024",
         description: "Fue mui lindo ese día",
-        image: "fotos/10.JPG"
+        image: "fotos/10.jpg"
     },
     {
         id: 11,
@@ -100,7 +100,7 @@ const photosData = [
         title: "Paseo a rocas",
         date: "19 de Abril, 2025",
         description: "Cuando fuimos de paseo a una rocas jiji",
-        image: "fotos/14.JPG"
+        image: "fotos/14.jpg"
     },
     {
         id: 15,
@@ -114,7 +114,7 @@ const photosData = [
         title: "En la nieve",
         date: "28 de Junio, 2025",
         description: "Cuando fuimos a pasear y fuimos a la nieve",
-        image: "fotos/16.JPG"
+        image: "fotos/16.jpg"
     },
     {
         id: 17,
