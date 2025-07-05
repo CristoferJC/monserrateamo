@@ -111,7 +111,7 @@ const photosData = [
     },
     {
         id: 16,
-        title: "Nieve",
+        title: "En la nieve",
         date: "28 de Junio, 2025",
         description: "Cuando fuimos a pasear y fuimos a la nieve",
         image: "fotos/16.JPG"
