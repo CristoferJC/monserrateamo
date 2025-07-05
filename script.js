@@ -1,48 +1,61 @@
 // Variables globales
-let messages = JSON.parse(localStorage.getItem('loveMessages')) || [];
+let letters = JSON.parse(localStorage.getItem('loveLetters')) || [];
 let photos = JSON.parse(localStorage.getItem('lovePhotos')) || [];
-let currentSongIndex = 0;
+let moments = JSON.parse(localStorage.getItem('loveMoments')) || [];
 
 // Elementos del DOM
-const messageInput = document.getElementById('messageInput');
-const charCount = document.getElementById('charCount');
-const addMessageBtn = document.getElementById('addMessageBtn');
-const messagesList = document.getElementById('messagesList');
-const photoInput = document.getElementById('photoInput');
-const uploadBox = document.getElementById('uploadBox');
-const photoCollage = document.getElementById('photoCollage');
+const loveLetter = document.getElementById('loveLetter');
+const saveLetterBtn = document.getElementById('saveLetterBtn');
+const clearLetterBtn = document.getElementById('clearLetterBtn');
+const lettersList = document.getElementById('lettersList');
+const letterDate = document.getElementById('letterDate');
+
+const galleryInput = document.getElementById('galleryInput');
+const uploadArea = document.getElementById('uploadArea');
+const galleryGrid = document.getElementById('galleryGrid');
+
+const addMomentBtn = document.getElementById('addMomentBtn');
+const momentsTimeline = document.getElementById('momentsTimeline');
+const momentModal = document.getElementById('momentModal');
+const momentForm = document.getElementById('momentForm');
+
 const photoModal = document.getElementById('photoModal');
 const modalImage = document.getElementById('modalImage');
-const closeModal = document.querySelector('.close');
-const floatingHearts = document.getElementById('floatingHearts');
+const modalDate = document.getElementById('modalDate');
+const closeModal = document.querySelector('.close-modal');
 
 // Inicialización
 document.addEventListener('DOMContentLoaded', function() {
     initializeApp();
-    createFloatingHearts();
+    updateLetterDate();
+    createWelcomeLetter();
 });
 
 function initializeApp() {
-    displayMessages();
+    displayLetters();
     displayPhotos();
+    displayMoments();
     setupEventListeners();
-    addWelcomeMessage();
 }
 
 // Event Listeners
 function setupEventListeners() {
-    // Mensajes
-    messageInput.addEventListener('input', updateCharCount);
-    addMessageBtn.addEventListener('click', addMessage);
-    messageInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter' && e.ctrlKey) {
-            addMessage();
-        }
-    });
+    // Cartas de amor
+    saveLetterBtn.addEventListener('click', saveLetter);
+    clearLetterBtn.addEventListener('click', clearLetter);
+    loveLetter.addEventListener('input', autoSave);
 
-    // Fotos
-    uploadBox.addEventListener('click', () => photoInput.click());
-    photoInput.addEventListener('change', handlePhotoUpload);
+    // Galería de fotos
+    uploadArea.addEventListener('click', () => galleryInput.click());
+    uploadArea.addEventListener('dragover', handleDragOver);
+    uploadArea.addEventListener('drop', handleDrop);
+    galleryInput.addEventListener('change', handlePhotoUpload);
+
+    // Momentos especiales
+    addMomentBtn.addEventListener('click', openMomentModal);
+    momentForm.addEventListener('submit', saveMoment);
+
+    // Modales
     closeModal.addEventListener('click', closePhotoModal);
     photoModal.addEventListener('click', function(e) {
         if (e.target === photoModal) {
@@ -50,37 +63,41 @@ function setupEventListeners() {
         }
     });
 
-    // Música
-    document.getElementById('playBtn').addEventListener('click', playMusic);
-    document.getElementById('pauseBtn').addEventListener('click', pauseMusic);
-    document.getElementById('nextBtn').addEventListener('click', nextSong);
+    // Cerrar modal de momentos
+    document.querySelectorAll('.close-modal').forEach(btn => {
+        btn.addEventListener('click', function() {
+            this.closest('.modal').style.display = 'none';
+        });
+    });
 
     // Efectos especiales
     document.addEventListener('mousemove', createHeartTrail);
+    createFloatingHearts();
 }
 
-// Funcionalidad de mensajes
-function updateCharCount() {
-    const count = messageInput.value.length;
-    charCount.textContent = `${count}/500`;
-    
-    if (count > 450) {
-        charCount.style.color = '#ff6b6b';
-    } else {
-        charCount.style.color = 'rgba(255, 255, 255, 0.8)';
-    }
+// Funcionalidad de cartas de amor
+function updateLetterDate() {
+    const today = new Date();
+    const options = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    };
+    letterDate.textContent = today.toLocaleDateString('es-ES', options);
 }
 
-function addMessage() {
-    const text = messageInput.value.trim();
+function saveLetter() {
+    const text = loveLetter.value.trim();
     if (text === '') {
-        showNotification('Por favor escribe un mensaje 💕', 'warning');
+        showNotification('Por favor escribe algo en tu carta de amor 💕', 'warning');
         return;
     }
 
-    const message = {
+    const letter = {
         id: Date.now(),
-        text: text,
+        title: generateLetterTitle(text),
+        content: text,
         date: new Date().toLocaleString('es-ES', {
             year: 'numeric',
             month: 'long',
@@ -91,61 +108,126 @@ function addMessage() {
         timestamp: Date.now()
     };
 
-    messages.unshift(message);
-    saveMessages();
-    displayMessages();
-    messageInput.value = '';
-    updateCharCount();
+    letters.unshift(letter);
+    saveLetters();
+    displayLetters();
+    clearLetter();
     
-    showNotification('Mensaje de amor agregado ❤️', 'success');
+    showNotification('Carta de amor guardada con éxito ❤️', 'success');
     createHeartBurst();
 }
 
-function displayMessages() {
-    messagesList.innerHTML = '';
+function generateLetterTitle(text) {
+    const words = text.split(' ').slice(0, 5);
+    return words.join(' ') + (text.length > 50 ? '...' : '');
+}
+
+function clearLetter() {
+    loveLetter.value = '';
+    localStorage.removeItem('draftLetter');
+}
+
+function autoSave() {
+    localStorage.setItem('draftLetter', loveLetter.value);
+}
+
+function displayLetters() {
+    lettersList.innerHTML = '';
     
-    if (messages.length === 0) {
-        messagesList.innerHTML = `
-            <div class="message-card" style="text-align: center; color: #666;">
-                <i class="fas fa-heart" style="font-size: 2rem; color: #ff6b6b; margin-bottom: 10px;"></i>
-                <p>No hay mensajes aún. ¡Escribe el primero! 💕</p>
+    if (letters.length === 0) {
+        lettersList.innerHTML = `
+            <div class="letter-item" style="text-align: center; color: #718096;">
+                <i class="fas fa-heart" style="font-size: 2rem; color: #ff6b9d; margin-bottom: 10px;"></i>
+                <p>No hay cartas guardadas aún. ¡Escribe la primera! 💕</p>
             </div>
         `;
         return;
     }
 
-    messages.forEach(message => {
-        const messageCard = document.createElement('div');
-        messageCard.className = 'message-card';
-        messageCard.innerHTML = `
-            <button class="delete-message" onclick="deleteMessage(${message.id})">
-                <i class="fas fa-times"></i>
-            </button>
-            <div class="message-text">${message.text}</div>
-            <div class="message-date">${message.date}</div>
+    letters.forEach(letter => {
+        const letterItem = document.createElement('div');
+        letterItem.className = 'letter-item';
+        letterItem.innerHTML = `
+            <h4>${letter.title}</h4>
+            <div class="letter-preview">${letter.content.substring(0, 100)}...</div>
+            <div class="letter-date">${letter.date}</div>
         `;
-        messagesList.appendChild(messageCard);
+        letterItem.addEventListener('click', () => viewLetter(letter));
+        lettersList.appendChild(letterItem);
     });
 }
 
-function deleteMessage(id) {
-    if (confirm('¿Estás seguro de que quieres eliminar este mensaje de amor? 💔')) {
-        messages = messages.filter(msg => msg.id !== id);
-        saveMessages();
-        displayMessages();
-        showNotification('Mensaje eliminado 💔', 'info');
+function viewLetter(letter) {
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.innerHTML = `
+        <div class="modal-content moment-modal">
+            <span class="close-modal">&times;</span>
+            <div class="letter-view">
+                <h3>${letter.title}</h3>
+                <div class="letter-date">${letter.date}</div>
+                <div class="letter-content-view">${letter.content.replace(/\n/g, '<br>')}</div>
+                <div class="letter-actions">
+                    <button class="elegant-btn secondary" onclick="deleteLetter(${letter.id})">
+                        <i class="fas fa-trash"></i> Eliminar
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    modal.style.display = 'flex';
+    
+    modal.querySelector('.close-modal').addEventListener('click', () => {
+        modal.remove();
+    });
+    
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+}
+
+function deleteLetter(id) {
+    if (confirm('¿Estás seguro de que quieres eliminar esta carta de amor? 💔')) {
+        letters = letters.filter(letter => letter.id !== id);
+        saveLetters();
+        displayLetters();
+        showNotification('Carta eliminada 💔', 'info');
+        document.querySelector('.modal').remove();
     }
 }
 
-function saveMessages() {
-    localStorage.setItem('loveMessages', JSON.stringify(messages));
+function saveLetters() {
+    localStorage.setItem('loveLetters', JSON.stringify(letters));
 }
 
-// Funcionalidad de fotos
+// Funcionalidad de galería de fotos
+function handleDragOver(e) {
+    e.preventDefault();
+    uploadArea.style.borderColor = '#ff6b9d';
+    uploadArea.style.transform = 'scale(1.05)';
+}
+
+function handleDrop(e) {
+    e.preventDefault();
+    uploadArea.style.borderColor = '#667eea';
+    uploadArea.style.transform = 'scale(1)';
+    
+    const files = e.dataTransfer.files;
+    handleFiles(files);
+}
+
 function handlePhotoUpload(event) {
     const files = event.target.files;
-    
-    for (let file of files) {
+    handleFiles(files);
+    event.target.value = '';
+}
+
+function handleFiles(files) {
+    Array.from(files).forEach(file => {
         if (file.type.startsWith('image/')) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -153,29 +235,29 @@ function handlePhotoUpload(event) {
                     id: Date.now() + Math.random(),
                     src: e.target.result,
                     name: file.name,
-                    date: new Date().toLocaleString('es-ES')
+                    date: new Date().toLocaleString('es-ES'),
+                    timestamp: Date.now()
                 };
                 
                 photos.push(photo);
                 savePhotos();
                 displayPhotos();
-                showNotification('Foto agregada 📸', 'success');
+                showNotification('Foto agregada a la galería 📸', 'success');
             };
             reader.readAsDataURL(file);
         }
-    }
-    
-    event.target.value = '';
+    });
 }
 
 function displayPhotos() {
-    photoCollage.innerHTML = '';
+    galleryGrid.innerHTML = '';
     
     if (photos.length === 0) {
-        photoCollage.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">
-                <i class="fas fa-images" style="font-size: 3rem; color: #667eea; margin-bottom: 15px;"></i>
-                <p>No hay fotos aún. ¡Agrega las primeras! 📸</p>
+        galleryGrid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 60px; color: #718096;">
+                <i class="fas fa-images" style="font-size: 4rem; color: #667eea; margin-bottom: 20px;"></i>
+                <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 10px;">Galería Vacía</h3>
+                <p>No hay fotos aún. ¡Agrega las primeras para crear nuestra historia visual! 📸</p>
             </div>
         `;
         return;
@@ -183,28 +265,46 @@ function displayPhotos() {
 
     photos.forEach(photo => {
         const photoItem = document.createElement('div');
-        photoItem.className = 'photo-item';
+        photoItem.className = 'gallery-item';
         photoItem.innerHTML = `
-            <img src="${photo.src}" alt="${photo.name}" onclick="openPhotoModal('${photo.src}')">
-            <div class="photo-overlay">
-                <button class="delete-photo" onclick="deletePhoto(${photo.id})">
-                    <i class="fas fa-trash"></i>
-                </button>
+            <img src="${photo.src}" alt="${photo.name}" onclick="openPhotoModal('${photo.src}', '${photo.date}')">
+            <div class="gallery-overlay">
+                <div class="gallery-actions">
+                    <button class="gallery-btn" onclick="downloadPhoto('${photo.src}', '${photo.name}')">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="gallery-btn" onclick="deletePhoto(${photo.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="gallery-info">
+                <div>${photo.name}</div>
+                <small>${photo.date}</small>
             </div>
         `;
-        photoCollage.appendChild(photoItem);
+        galleryGrid.appendChild(photoItem);
     });
 }
 
-function openPhotoModal(src) {
+function openPhotoModal(src, date) {
     modalImage.src = src;
+    modalDate.textContent = date;
     photoModal.style.display = 'flex';
-    photoModal.style.alignItems = 'center';
-    photoModal.style.justifyContent = 'center';
 }
 
 function closePhotoModal() {
     photoModal.style.display = 'none';
+}
+
+function downloadPhoto(src, name) {
+    const link = document.createElement('a');
+    link.href = src;
+    link.download = name;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showNotification('Descarga iniciada 📥', 'success');
 }
 
 function deletePhoto(id) {
@@ -220,62 +320,131 @@ function savePhotos() {
     localStorage.setItem('lovePhotos', JSON.stringify(photos));
 }
 
-// Funcionalidad de música
-const romanticSongs = [
-    { title: "Perfect - Ed Sheeran", url: "https://www.youtube.com/watch?v=2Vv-BfVoq4g" },
-    { title: "All of Me - John Legend", url: "https://www.youtube.com/watch?v=450p7goxZqg" },
-    { title: "A Thousand Years - Christina Perri", url: "https://www.youtube.com/watch?v=rtOvBOTyX00" },
-    { title: "Can't Help Falling in Love - Elvis Presley", url: "https://www.youtube.com/watch?v=vGJTaP6anOU" },
-    { title: "Just the Way You Are - Bruno Mars", url: "https://www.youtube.com/watch?v=LjhCEhWiKXk" }
-];
-
-function playMusic() {
-    const song = romanticSongs[currentSongIndex];
-    showNotification(`Reproduciendo: ${song.title} 🎵`, 'success');
-    // En una implementación real, aquí se reproduciría la música
-    document.getElementById('currentSong').textContent = song.title;
+// Funcionalidad de momentos especiales
+function openMomentModal() {
+    momentModal.style.display = 'flex';
+    document.getElementById('momentDate').value = new Date().toISOString().split('T')[0];
 }
 
-function pauseMusic() {
-    showNotification('Música pausada ⏸️', 'info');
+function closeMomentModal() {
+    momentModal.style.display = 'none';
+    momentForm.reset();
 }
 
-function nextSong() {
-    currentSongIndex = (currentSongIndex + 1) % romanticSongs.length;
-    const song = romanticSongs[currentSongIndex];
-    document.getElementById('currentSong').textContent = song.title;
-    showNotification(`Siguiente: ${song.title} 🎵`, 'success');
+function saveMoment(e) {
+    e.preventDefault();
+    
+    const title = document.getElementById('momentTitle').value.trim();
+    const date = document.getElementById('momentDate').value;
+    const description = document.getElementById('momentDescription').value.trim();
+    
+    if (!title || !date || !description) {
+        showNotification('Por favor completa todos los campos 💕', 'warning');
+        return;
+    }
+    
+    const moment = {
+        id: Date.now(),
+        title: title,
+        date: date,
+        description: description,
+        formattedDate: new Date(date).toLocaleDateString('es-ES', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        }),
+        timestamp: Date.now()
+    };
+    
+    moments.unshift(moment);
+    saveMoments();
+    displayMoments();
+    closeMomentModal();
+    
+    showNotification('Momento especial guardado ⭐', 'success');
+}
+
+function displayMoments() {
+    momentsTimeline.innerHTML = '';
+    
+    if (moments.length === 0) {
+        momentsTimeline.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #718096;">
+                <i class="fas fa-star" style="font-size: 3rem; color: #ff6b9d; margin-bottom: 15px;"></i>
+                <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 10px;">Sin Momentos Especiales</h3>
+                <p>¡Agrega nuestros momentos más importantes para recordarlos siempre! ⭐</p>
+            </div>
+        `;
+        return;
+    }
+    
+    moments.forEach(moment => {
+        const momentItem = document.createElement('div');
+        momentItem.className = 'moment-item';
+        momentItem.innerHTML = `
+            <div class="moment-content">
+                <div class="moment-title">${moment.title}</div>
+                <div class="moment-date">${moment.formattedDate}</div>
+                <div class="moment-description">${moment.description}</div>
+                <button class="elegant-btn secondary" style="margin-top: 15px; padding: 8px 15px; font-size: 0.9rem;" onclick="deleteMoment(${moment.id})">
+                    <i class="fas fa-trash"></i> Eliminar
+                </button>
+            </div>
+        `;
+        momentsTimeline.appendChild(momentItem);
+    });
+}
+
+function deleteMoment(id) {
+    if (confirm('¿Estás seguro de que quieres eliminar este momento especial? ⭐')) {
+        moments = moments.filter(moment => moment.id !== id);
+        saveMoments();
+        displayMoments();
+        showNotification('Momento eliminado ⭐', 'info');
+    }
+}
+
+function saveMoments() {
+    localStorage.setItem('loveMoments', JSON.stringify(moments));
 }
 
 // Efectos visuales
 function createFloatingHearts() {
     setInterval(() => {
         const heart = document.createElement('div');
-        heart.className = 'heart';
-        heart.innerHTML = '❤️';
-        heart.style.left = Math.random() * 100 + '%';
-        heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
-        heart.style.fontSize = (Math.random() * 1 + 1) + 'rem';
+        heart.innerHTML = '💕';
+        heart.style.cssText = `
+            position: fixed;
+            left: ${Math.random() * 100}%;
+            top: 100vh;
+            font-size: ${Math.random() * 1 + 1}rem;
+            opacity: 0.7;
+            pointer-events: none;
+            z-index: 9999;
+            animation: floatUp 6s ease-in-out forwards;
+        `;
         
-        floatingHearts.appendChild(heart);
+        document.body.appendChild(heart);
         
         setTimeout(() => {
             heart.remove();
         }, 6000);
-    }, 2000);
+    }, 3000);
 }
 
 function createHeartTrail(event) {
-    if (Math.random() < 0.1) { // 10% de probabilidad
+    if (Math.random() < 0.05) {
         const heart = document.createElement('div');
-        heart.innerHTML = '💕';
-        heart.style.position = 'fixed';
-        heart.style.left = event.clientX + 'px';
-        heart.style.top = event.clientY + 'px';
-        heart.style.pointerEvents = 'none';
-        heart.style.zIndex = '9999';
-        heart.style.fontSize = '1.5rem';
-        heart.style.animation = 'float 2s ease-out forwards';
+        heart.innerHTML = '💖';
+        heart.style.cssText = `
+            position: fixed;
+            left: ${event.clientX}px;
+            top: ${event.clientY}px;
+            font-size: 1.2rem;
+            pointer-events: none;
+            z-index: 9999;
+            animation: heartTrail 2s ease-out forwards;
+        `;
         
         document.body.appendChild(heart);
         
@@ -286,37 +455,67 @@ function createHeartTrail(event) {
 }
 
 function createHeartBurst() {
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 12; i++) {
         const heart = document.createElement('div');
         heart.innerHTML = '💖';
-        heart.style.position = 'fixed';
-        heart.style.left = '50%';
-        heart.style.top = '50%';
-        heart.style.transform = 'translate(-50%, -50%)';
-        heart.style.pointerEvents = 'none';
-        heart.style.zIndex = '9999';
-        heart.style.fontSize = '2rem';
-        heart.style.animation = `heartBurst 1s ease-out forwards`;
-        heart.style.setProperty('--angle', `${i * 45}deg`);
+        heart.style.cssText = `
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            font-size: 1.5rem;
+            pointer-events: none;
+            z-index: 10000;
+            animation: heartBurst 1.5s ease-out forwards;
+            transform: translate(-50%, -50%);
+        `;
+        heart.style.setProperty('--angle', `${i * 30}deg`);
         
         document.body.appendChild(heart);
         
         setTimeout(() => {
             heart.remove();
-        }, 1000);
+        }, 1500);
     }
 }
 
-// Agregar animación CSS para el burst de corazones
+// Agregar animaciones CSS
 const style = document.createElement('style');
 style.textContent = `
+    @keyframes floatUp {
+        0% {
+            transform: translateY(0) rotate(0deg);
+            opacity: 0;
+        }
+        10% {
+            opacity: 0.7;
+        }
+        90% {
+            opacity: 0.7;
+        }
+        100% {
+            transform: translateY(-100vh) rotate(360deg);
+            opacity: 0;
+        }
+    }
+    
+    @keyframes heartTrail {
+        0% {
+            transform: scale(1) rotate(0deg);
+            opacity: 1;
+        }
+        100% {
+            transform: scale(0) rotate(180deg);
+            opacity: 0;
+        }
+    }
+    
     @keyframes heartBurst {
         0% {
             transform: translate(-50%, -50%) rotate(var(--angle)) translateY(0);
             opacity: 1;
         }
         100% {
-            transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-100px);
+            transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-150px);
             opacity: 0;
         }
     }
@@ -332,25 +531,27 @@ function showNotification(message, type = 'info') {
         position: fixed;
         top: 20px;
         right: 20px;
-        background: ${type === 'success' ? '#4CAF50' : type === 'warning' ? '#FF9800' : type === 'error' ? '#f44336' : '#2196F3'};
+        background: ${type === 'success' ? '#48bb78' : type === 'warning' ? '#ed8936' : type === 'error' ? '#f56565' : '#4299e1'};
         color: white;
-        padding: 15px 20px;
-        border-radius: 10px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        padding: 15px 25px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         z-index: 10000;
-        animation: slideInRight 0.3s ease-out;
-        max-width: 300px;
+        animation: slideInRight 0.4s ease-out;
+        max-width: 350px;
         word-wrap: break-word;
+        font-weight: 500;
+        backdrop-filter: blur(10px);
     `;
     
     document.body.appendChild(notification);
     
     setTimeout(() => {
-        notification.style.animation = 'slideOutRight 0.3s ease-in forwards';
+        notification.style.animation = 'slideOutRight 0.4s ease-in forwards';
         setTimeout(() => {
             notification.remove();
-        }, 300);
-    }, 3000);
+        }, 400);
+    }, 4000);
 }
 
 // Agregar animaciones CSS para notificaciones
@@ -380,20 +581,44 @@ notificationStyle.textContent = `
 `;
 document.head.appendChild(notificationStyle);
 
-// Mensaje de bienvenida
-function addWelcomeMessage() {
-    if (messages.length === 0) {
-        const welcomeMessage = {
+// Carta de bienvenida
+function createWelcomeLetter() {
+    if (letters.length === 0) {
+        const welcomeLetter = {
             id: Date.now(),
-            text: "¡Bienvenida a nuestra página de amor! Aquí puedes leer todos los mensajes que escribo para ti. Te amo más cada día. ❤️",
+            title: "Bienvenida a Nuestro Mundo de Amor",
+            content: `Querida mía,
+
+Bienvenida a esta página especial que he creado solo para ti. Aquí podrás encontrar todas las cartas de amor que escribo para expresar lo que siento por ti.
+
+Cada palabra, cada pensamiento, cada sentimiento está dedicado a ti. Eres el amor de mi vida y quiero que tengas un lugar especial donde guardar todos nuestros momentos.
+
+Te amo más cada día.
+
+Con todo mi amor...`,
             date: new Date().toLocaleString('es-ES'),
             timestamp: Date.now()
         };
-        messages.push(welcomeMessage);
-        saveMessages();
-        displayMessages();
+        letters.push(welcomeLetter);
+        saveLetters();
+        displayLetters();
     }
 }
+
+// Cargar borrador guardado
+window.addEventListener('load', function() {
+    const draft = localStorage.getItem('draftLetter');
+    if (draft) {
+        loveLetter.value = draft;
+    }
+});
+
+// Guardar datos automáticamente
+window.addEventListener('beforeunload', function() {
+    saveLetters();
+    savePhotos();
+    saveMoments();
+});
 
 // Efectos de entrada
 window.addEventListener('load', function() {
@@ -403,60 +628,5 @@ window.addEventListener('load', function() {
     setTimeout(() => {
         document.body.style.opacity = '1';
     }, 100);
-});
-
-// Guardar datos automáticamente
-window.addEventListener('beforeunload', function() {
-    saveMessages();
-    savePhotos();
-});
-
-// Efecto de confeti en fechas especiales
-function checkSpecialDate() {
-    const today = new Date();
-    const month = today.getMonth() + 1;
-    const day = today.getDate();
-    
-    // San Valentín, aniversarios, etc.
-    if ((month === 2 && day === 14) || (month === 12 && day === 25)) {
-        createConfetti();
-    }
-}
-
-function createConfetti() {
-    const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3'];
-    
-    for (let i = 0; i < 100; i++) {
-        const confetti = document.createElement('div');
-        confetti.style.cssText = `
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            background: ${colors[Math.floor(Math.random() * colors.length)]};
-            left: ${Math.random() * 100}%;
-            top: -10px;
-            animation: confettiFall 3s linear infinite;
-            z-index: 9998;
-        `;
-        
-        document.body.appendChild(confetti);
-        
-        setTimeout(() => {
-            confetti.remove();
-        }, 3000);
-    }
-}
-
-// Agregar animación CSS para confeti
-const confettiStyle = document.createElement('style');
-confettiStyle.textContent = `
-    @keyframes confettiFall {
-        to {
-            transform: translateY(100vh) rotate(360deg);
-        }
-    }
-`;
-document.head.appendChild(confettiStyle);
-
-// Verificar fecha especial al cargar
+}); 
 checkSpecialDate(); 

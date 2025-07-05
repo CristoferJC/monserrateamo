@@ -3,89 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para Mi Amor ❤️</title>
+    <title>Para Mi Amor Eterno ❤️</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <!-- Header con título romántico -->
+        <!-- Header elegante -->
         <header class="header">
-            <h1 class="main-title">
-                <i class="fas fa-heart"></i>
-                Para Mi Amor
-                <i class="fas fa-heart"></i>
-            </h1>
-            <p class="subtitle">Cada día te amo más...</p>
+            <div class="header-content">
+                <h1 class="main-title">
+                    <span class="title-line">Para Mi</span>
+                    <span class="title-line highlight">Amor Eterno</span>
+                </h1>
+                <p class="subtitle">Cada latido de mi corazón es para ti</p>
+                <div class="header-decoration">
+                    <div class="decoration-line"></div>
+                    <i class="fas fa-heart decoration-heart"></i>
+                    <div class="decoration-line"></div>
+                </div>
+            </div>
         </header>
 
-        <!-- Sección de mensajes -->
-        <section class="message-section">
-            <h2><i class="fas fa-pen-fancy"></i> Mis Mensajes Para Ti</h2>
-            <div class="message-container">
-                <div class="message-input-area">
-                    <textarea id="messageInput" placeholder="Escribe aquí tu mensaje de amor... 💕" maxlength="500"></textarea>
-                    <div class="message-controls">
-                        <span id="charCount">0/500</span>
-                        <button id="addMessageBtn" class="btn-primary">
-                            <i class="fas fa-plus"></i> Agregar Mensaje
+        <!-- Sección de párrafo romántico -->
+        <section class="love-letter-section">
+            <div class="section-header">
+                <h2><i class="fas fa-feather-alt"></i> Mi Carta de Amor</h2>
+                <p class="section-description">Escribe aquí tus sentimientos más profundos</p>
+            </div>
+            
+            <div class="letter-container">
+                <div class="letter-paper">
+                    <div class="letter-header">
+                        <span class="letter-date" id="letterDate">Hoy</span>
+                        <div class="letter-hearts">
+                            <i class="fas fa-heart"></i>
+                            <i class="fas fa-heart"></i>
+                            <i class="fas fa-heart"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="letter-content">
+                        <textarea id="loveLetter" placeholder="Querida mía,
+
+Escribe aquí todo lo que sientes por ella. Puedes contar historias, expresar tus sentimientos, recordar momentos especiales...
+
+Cada palabra que escribas aquí será un tesoro de amor que ella podrá leer una y otra vez.
+
+Con todo mi amor..."></textarea>
+                    </div>
+                    
+                    <div class="letter-footer">
+                        <button id="saveLetterBtn" class="elegant-btn">
+                            <i class="fas fa-save"></i>
+                            Guardar Carta
+                        </button>
+                        <button id="clearLetterBtn" class="elegant-btn secondary">
+                            <i class="fas fa-eraser"></i>
+                            Limpiar
                         </button>
                     </div>
                 </div>
-                <div id="messagesList" class="messages-list">
-                    <!-- Los mensajes se agregarán aquí dinámicamente -->
+                
+                <div class="saved-letters">
+                    <h3>Mis Cartas Guardadas</h3>
+                    <div id="lettersList" class="letters-list">
+                        <!-- Las cartas guardadas aparecerán aquí -->
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Sección de collage de fotos -->
-        <section class="photo-section">
-            <h2><i class="fas fa-images"></i> Nuestros Momentos Especiales</h2>
-            <div class="photo-upload-area">
-                <div class="upload-box" id="uploadBox">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <p>Haz clic para agregar fotos</p>
-                    <input type="file" id="photoInput" accept="image/*" multiple>
-                </div>
+        <!-- Galería de fotos elegante -->
+        <section class="gallery-section">
+            <div class="section-header">
+                <h2><i class="fas fa-images"></i> Nuestra Galería de Amor</h2>
+                <p class="section-description">Cada foto cuenta nuestra historia</p>
             </div>
-            <div id="photoCollage" class="photo-collage">
-                <!-- Las fotos se agregarán aquí dinámicamente -->
-            </div>
-        </section>
-
-        <!-- Sección de música romántica -->
-        <section class="music-section">
-            <h2><i class="fas fa-music"></i> Música Para Nuestro Amor</h2>
-            <div class="music-player">
-                <div class="music-controls">
-                    <button id="playBtn" class="music-btn">
-                        <i class="fas fa-play"></i>
-                    </button>
-                    <button id="pauseBtn" class="music-btn">
-                        <i class="fas fa-pause"></i>
-                    </button>
-                    <button id="nextBtn" class="music-btn">
-                        <i class="fas fa-forward"></i>
-                    </button>
+            
+            <div class="gallery-container">
+                <div class="gallery-upload">
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-content">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <h3>Agregar Fotos</h3>
+                            <p>Haz clic o arrastra tus fotos aquí</p>
+                            <span class="upload-hint">Formatos: JPG, PNG, GIF</span>
+                        </div>
+                        <input type="file" id="galleryInput" accept="image/*" multiple>
+                    </div>
                 </div>
-                <div class="song-info">
-                    <span id="currentSong">Selecciona una canción romántica</span>
+                
+                <div class="gallery-grid" id="galleryGrid">
+                    <!-- Las fotos se mostrarán aquí -->
                 </div>
             </div>
         </section>
 
-        <!-- Footer romántico -->
+        <!-- Sección de momentos especiales -->
+        <section class="moments-section">
+            <div class="section-header">
+                <h2><i class="fas fa-star"></i> Nuestros Momentos Especiales</h2>
+                <p class="section-description">Recuerdos que atesoramos para siempre</p>
+            </div>
+            
+            <div class="moments-timeline" id="momentsTimeline">
+                <!-- Los momentos especiales se agregarán aquí -->
+            </div>
+            
+            <div class="add-moment">
+                <button id="addMomentBtn" class="elegant-btn">
+                    <i class="fas fa-plus"></i>
+                    Agregar Momento Especial
+                </button>
+            </div>
+        </section>
+
+        <!-- Footer elegante -->
         <footer class="footer">
-            <p>Hecho con <i class="fas fa-heart"></i> para ti, mi amor</p>
-            <div class="floating-hearts" id="floatingHearts"></div>
+            <div class="footer-content">
+                <div class="footer-heart">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <p>Hecho con amor infinito para ti</p>
+                <div class="footer-decoration">
+                    <span>❤️</span>
+                    <span>💕</span>
+                    <span>💖</span>
+                </div>
+            </div>
         </footer>
     </div>
 
-    <!-- Modal para ver fotos -->
+    <!-- Modal para fotos -->
     <div id="photoModal" class="modal">
-        <span class="close">&times;</span>
-        <img id="modalImage" class="modal-content">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <img id="modalImage" class="modal-image">
+            <div class="modal-info">
+                <span id="modalDate"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para agregar momento especial -->
+    <div id="momentModal" class="modal">
+        <div class="modal-content moment-modal">
+            <span class="close-modal">&times;</span>
+            <h3>Agregar Momento Especial</h3>
+            <form id="momentForm">
+                <div class="form-group">
+                    <label for="momentTitle">Título del momento</label>
+                    <input type="text" id="momentTitle" placeholder="Ej: Nuestro primer beso" required>
+                </div>
+                <div class="form-group">
+                    <label for="momentDate">Fecha</label>
+                    <input type="date" id="momentDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="momentDescription">Descripción</label>
+                    <textarea id="momentDescription" placeholder="Describe este momento especial..." required></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="elegant-btn">Guardar Momento</button>
+                    <button type="button" class="elegant-btn secondary" onclick="closeMomentModal()">Cancelar</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script src="script.js"></script>
