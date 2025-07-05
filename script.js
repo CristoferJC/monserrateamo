@@ -16,7 +16,7 @@ const photosData = [
         title: "Nuestra segunda salida",
         date: "4 de Diciembre, 2024",
         description: "",
-        image: "fotos/2.jpg",
+        image: "fotos/2.jpg"
     },
     {
         id: 3,
