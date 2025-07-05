@@ -1,15 +1,177 @@
 // Variables globales
-let letters = JSON.parse(localStorage.getItem('loveLetters')) || [];
 let photos = JSON.parse(localStorage.getItem('lovePhotos')) || [];
 let moments = JSON.parse(localStorage.getItem('loveMoments')) || [];
 
-// Elementos del DOM
-const loveLetter = document.getElementById('loveLetter');
-const saveLetterBtn = document.getElementById('saveLetterBtn');
-const clearLetterBtn = document.getElementById('clearLetterBtn');
-const lettersList = document.getElementById('lettersList');
-const letterDate = document.getElementById('letterDate');
+// Datos de las fotos (puedes agregar más fotos aquí)
+const photosData = [
+    {
+        id: 1,
+        title: "Nuestra primera salida",
+        date: "3 de Diciembre, 2024",
+        description: "Nuestra primera salida juntos",
+        image: "fotos/1.jpg"
+    },
+    {
+        id: 2,
+        title: "Nuestra segunda salida",
+        date: "4 de Diciembre, 2024",
+        description: "",
+        image: "fotos/2.jpg",
+    },
+    {
+        id: 3,
+        title: "En el polvorín",
+        date: "7 de Diciembre, 2024",
+        description: "",
+        image: "fotos/3.jpg"
+    },
+    {
+        id: 4,
+        title: "En tu casa",
+        date: "9 de Diciembre, 2024",
+        description: "Cuando me invitaste por primera vez a tu casa",
+        image: "fotos/4.jpg"
+    },
+    {
+        id: 5,
+        title: "Mi cumpleaños",
+        date: "15 de Diciembre, 2024",
+        description: "El día de mi cumpleaños, cuando te invité a mi casa",
+        image: "fotos/5.jpg"
+    },
+    {
+        id: 6,
+        title: "En mi casa",
+        date: "17 de Diciembre, 2024",
+        description: "Cuando fuiste a mi casa jiji",
+        image: "fotos/6.jpg"
+    },
+    {
+        id: 7,
+        title: "Viaje a castro",
+        date: "23 de Diciembre, 2024",
+        description: "Cuando fuimos a Castro",
+        image: "fotos/7.jpg"
+    },
+    {
+        id: 8,
+        title: "Paseito",
+        date: "28 de Diciembre, 2024",
+        description: "Cuando fuimos a pasear a la playa",
+        image: "fotos/8.jpg"
+    },
+    {
+        id: 9,
+        title: "Feria de las pulgas",
+        date: "29 de Diciembre, 2024",
+        description: "Creo que fue la primera vez que fuimos a la feria de las pulgas",
+        image: "fotos/9.jpg"
+    },
+    {
+        id: 10,
+        title: "Año nuevooo",
+        date: "31 de Diciembre, 2024",
+        description: "Fue mui lindo ese día",
+        image: "fotos/10.jpg"
+    },
+    {
+        id: 11,
+        title: "Recreación primeras salidas",
+        date: "16 de Enero, 2025",
+        description: "",
+        image: "fotos/11.jpg"
+    },
+    {
+        id: 12,
+        title: "Primer San Valentín",
+        date: "14 de Febrero, 2025",
+        description: "Este fue mi primer San Valentín",
+        image: "fotos/12.jpg"
+    },
+    {
+        id: 13,
+        title: "Maquillaje",
+        date: "15 de Marzo, 2025",
+        description: "Cuando hicimos pijamada y me maquillaste",
+        image: "fotos/13.jpg"
+    },
+    {
+        id: 14,
+        title: "Paseo a rocas",
+        date: "19 de Abril, 2025",
+        description: "Cuando fuimos de paseo a una rocas jiji",
+        image: "fotos/14.jpg"
+    },
+    {
+        id: 15,
+        title: "Bailes",
+        date: "17 de Mayo, 2025",
+        description: "Cuando fuimos a bailes",
+        image: "fotos/15.jpg"
+    },
+    {
+        id: 16,
+        title: "Nieve",
+        date: "28 de Junio, 2025",
+        description: "Cuando fuimos a pasear y fuimos a la nieve",
+        image: "fotos/16.jpg"
+    },
+    {
+        id: 17,
+        title: "Paseito",
+        date: "4 de Julio, 2025",
+        description: "Nos fuimos a comer sushi",
+        image: "fotos/17.jpg"
+    },
+    {
+        id: 18,
+        title: "Collage",
+        date: "5 de Julio, 2025",
+        description: "Fotitos nuestras",
+        image: "fotos/18.jpg"
+    }
+];
 
+// Momentos especiales predefinidos con fotos locales
+const specialMoments = [
+    {
+        id: 1,
+        title: "Nuestro Primer Encuentro",
+        date: "15 de Marzo, 2023",
+        description: "El día que nuestros caminos se cruzaron y todo cambió para siempre. Fue como si el universo conspirara para que nos encontráramos.",
+        photo: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=300&fit=crop"
+    },
+    {
+        id: 2,
+        title: "Nuestro Primer Beso",
+        date: "20 de Abril, 2023",
+        description: "Bajo las estrellas, en ese momento mágico, nuestros labios se encontraron y el tiempo se detuvo. Fue el beso más dulce y perfecto.",
+        photo: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=300&fit=crop"
+    },
+    {
+        id: 3,
+        title: "Nuestro Primer Viaje Juntos",
+        date: "10 de Julio, 2023",
+        description: "Explorando el mundo juntos, descubriendo nuevos lugares y creando recuerdos que durarán toda la vida. Cada momento fue mágico.",
+        photo: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=300&fit=crop"
+    },
+    {
+        id: 4,
+        title: "Celebrando Nuestro Aniversario",
+        date: "15 de Marzo, 2024",
+        description: "Un año de amor, risas, aventuras y crecimiento juntos. Cada día a tu lado es un regalo que atesoro con todo mi corazón.",
+        photo: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=300&fit=crop"
+    },
+    {
+        id: 5,
+        title: "Nuestro Futuro Juntos",
+        date: "Para Siempre",
+        description: "Mirando hacia el futuro, soñando con todos los momentos que aún nos esperan. Contigo quiero construir una vida llena de amor y felicidad.",
+        photo: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=300&fit=crop"
+    }
+];
+
+// Elementos del DOM
 const galleryInput = document.getElementById('galleryInput');
 const uploadArea = document.getElementById('uploadArea');
 const galleryGrid = document.getElementById('galleryGrid');
@@ -26,13 +188,13 @@ const closeModal = document.querySelector('.close-modal');
 
 // Inicialización
 document.addEventListener('DOMContentLoaded', function() {
-    initializeApp();
-    updateLetterDate();
-    createWelcomeLetter();
+    displayMoments();
+    setupEventListeners();
+    createFloatingHearts();
+    createPhotoCards();
 });
 
 function initializeApp() {
-    displayLetters();
     displayPhotos();
     displayMoments();
     setupEventListeners();
@@ -40,11 +202,6 @@ function initializeApp() {
 
 // Event Listeners
 function setupEventListeners() {
-    // Cartas de amor
-    saveLetterBtn.addEventListener('click', saveLetter);
-    clearLetterBtn.addEventListener('click', clearLetter);
-    loveLetter.addEventListener('input', autoSave);
-
     // Galería de fotos
     uploadArea.addEventListener('click', () => galleryInput.click());
     uploadArea.addEventListener('dragover', handleDragOver);
@@ -72,136 +229,6 @@ function setupEventListeners() {
 
     // Efectos especiales
     document.addEventListener('mousemove', createHeartTrail);
-    createFloatingHearts();
-}
-
-// Funcionalidad de cartas de amor
-function updateLetterDate() {
-    const today = new Date();
-    const options = { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-    };
-    letterDate.textContent = today.toLocaleDateString('es-ES', options);
-}
-
-function saveLetter() {
-    const text = loveLetter.value.trim();
-    if (text === '') {
-        showNotification('Por favor escribe algo en tu carta de amor 💕', 'warning');
-        return;
-    }
-
-    const letter = {
-        id: Date.now(),
-        title: generateLetterTitle(text),
-        content: text,
-        date: new Date().toLocaleString('es-ES', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        }),
-        timestamp: Date.now()
-    };
-
-    letters.unshift(letter);
-    saveLetters();
-    displayLetters();
-    clearLetter();
-    
-    showNotification('Carta de amor guardada con éxito ❤️', 'success');
-    createHeartBurst();
-}
-
-function generateLetterTitle(text) {
-    const words = text.split(' ').slice(0, 5);
-    return words.join(' ') + (text.length > 50 ? '...' : '');
-}
-
-function clearLetter() {
-    loveLetter.value = '';
-    localStorage.removeItem('draftLetter');
-}
-
-function autoSave() {
-    localStorage.setItem('draftLetter', loveLetter.value);
-}
-
-function displayLetters() {
-    lettersList.innerHTML = '';
-    
-    if (letters.length === 0) {
-        lettersList.innerHTML = `
-            <div class="letter-item" style="text-align: center; color: #718096;">
-                <i class="fas fa-heart" style="font-size: 2rem; color: #ff6b9d; margin-bottom: 10px;"></i>
-                <p>No hay cartas guardadas aún. ¡Escribe la primera! 💕</p>
-            </div>
-        `;
-        return;
-    }
-
-    letters.forEach(letter => {
-        const letterItem = document.createElement('div');
-        letterItem.className = 'letter-item';
-        letterItem.innerHTML = `
-            <h4>${letter.title}</h4>
-            <div class="letter-preview">${letter.content.substring(0, 100)}...</div>
-            <div class="letter-date">${letter.date}</div>
-        `;
-        letterItem.addEventListener('click', () => viewLetter(letter));
-        lettersList.appendChild(letterItem);
-    });
-}
-
-function viewLetter(letter) {
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.innerHTML = `
-        <div class="modal-content moment-modal">
-            <span class="close-modal">&times;</span>
-            <div class="letter-view">
-                <h3>${letter.title}</h3>
-                <div class="letter-date">${letter.date}</div>
-                <div class="letter-content-view">${letter.content.replace(/\n/g, '<br>')}</div>
-                <div class="letter-actions">
-                    <button class="elegant-btn secondary" onclick="deleteLetter(${letter.id})">
-                        <i class="fas fa-trash"></i> Eliminar
-                    </button>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(modal);
-    modal.style.display = 'flex';
-    
-    modal.querySelector('.close-modal').addEventListener('click', () => {
-        modal.remove();
-    });
-    
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.remove();
-        }
-    });
-}
-
-function deleteLetter(id) {
-    if (confirm('¿Estás seguro de que quieres eliminar esta carta de amor? 💔')) {
-        letters = letters.filter(letter => letter.id !== id);
-        saveLetters();
-        displayLetters();
-        showNotification('Carta eliminada 💔', 'info');
-        document.querySelector('.modal').remove();
-    }
-}
-
-function saveLetters() {
-    localStorage.setItem('loveLetters', JSON.stringify(letters));
 }
 
 // Funcionalidad de galería de fotos
@@ -367,28 +394,17 @@ function saveMoment(e) {
 function displayMoments() {
     momentsTimeline.innerHTML = '';
     
-    if (moments.length === 0) {
-        momentsTimeline.innerHTML = `
-            <div style="text-align: center; padding: 40px; color: #718096;">
-                <i class="fas fa-star" style="font-size: 3rem; color: #ff6b9d; margin-bottom: 15px;"></i>
-                <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 10px;">Sin Momentos Especiales</h3>
-                <p>¡Agrega nuestros momentos más importantes para recordarlos siempre! ⭐</p>
-            </div>
-        `;
-        return;
-    }
-    
-    moments.forEach(moment => {
+    specialMoments.forEach(moment => {
         const momentItem = document.createElement('div');
         momentItem.className = 'moment-item';
         momentItem.innerHTML = `
             <div class="moment-content">
                 <div class="moment-title">${moment.title}</div>
-                <div class="moment-date">${moment.formattedDate}</div>
+                <div class="moment-date">${moment.date}</div>
                 <div class="moment-description">${moment.description}</div>
-                <button class="elegant-btn secondary" style="margin-top: 15px; padding: 8px 15px; font-size: 0.9rem;" onclick="deleteMoment(${moment.id})">
-                    <i class="fas fa-trash"></i> Eliminar
-                </button>
+                <div class="moment-photo" onclick="openPhotoModal('${moment.photo}', '${moment.date}')">
+                    <img src="${moment.photo}" alt="${moment.title}">
+                </div>
             </div>
         `;
         momentsTimeline.appendChild(momentItem);
@@ -410,26 +426,23 @@ function saveMoments() {
 
 // Efectos visuales
 function createFloatingHearts() {
-    setInterval(() => {
+    const container = document.querySelector('.container');
+    
+    for (let i = 0; i < 20; i++) {
         const heart = document.createElement('div');
-        heart.innerHTML = '💕';
-        heart.style.cssText = `
-            position: fixed;
-            left: ${Math.random() * 100}%;
-            top: 100vh;
-            font-size: ${Math.random() * 1 + 1}rem;
-            opacity: 0.7;
-            pointer-events: none;
-            z-index: 9999;
-            animation: floatUp 6s ease-in-out forwards;
-        `;
+        heart.innerHTML = '❤️';
+        heart.style.position = 'fixed';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.top = Math.random() * 100 + 'vh';
+        heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+        heart.style.opacity = '0.3';
+        heart.style.pointerEvents = 'none';
+        heart.style.zIndex = '-1';
+        heart.style.animation = `float ${Math.random() * 10 + 10}s ease-in-out infinite`;
+        heart.style.animationDelay = Math.random() * 5 + 's';
         
-        document.body.appendChild(heart);
-        
-        setTimeout(() => {
-            heart.remove();
-        }, 6000);
-    }, 3000);
+        container.appendChild(heart);
+    }
 }
 
 function createHeartTrail(event) {
@@ -451,30 +464,6 @@ function createHeartTrail(event) {
         setTimeout(() => {
             heart.remove();
         }, 2000);
-    }
-}
-
-function createHeartBurst() {
-    for (let i = 0; i < 12; i++) {
-        const heart = document.createElement('div');
-        heart.innerHTML = '💖';
-        heart.style.cssText = `
-            position: fixed;
-            left: 50%;
-            top: 50%;
-            font-size: 1.5rem;
-            pointer-events: none;
-            z-index: 10000;
-            animation: heartBurst 1.5s ease-out forwards;
-            transform: translate(-50%, -50%);
-        `;
-        heart.style.setProperty('--angle', `${i * 30}deg`);
-        
-        document.body.appendChild(heart);
-        
-        setTimeout(() => {
-            heart.remove();
-        }, 1500);
     }
 }
 
@@ -505,17 +494,6 @@ style.textContent = `
         }
         100% {
             transform: scale(0) rotate(180deg);
-            opacity: 0;
-        }
-    }
-    
-    @keyframes heartBurst {
-        0% {
-            transform: translate(-50%, -50%) rotate(var(--angle)) translateY(0);
-            opacity: 1;
-        }
-        100% {
-            transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-150px);
             opacity: 0;
         }
     }
@@ -581,41 +559,8 @@ notificationStyle.textContent = `
 `;
 document.head.appendChild(notificationStyle);
 
-// Carta de bienvenida
-function createWelcomeLetter() {
-    if (letters.length === 0) {
-        const welcomeLetter = {
-            id: Date.now(),
-            title: "Bienvenida a Nuestro Mundo de Amor",
-            content: `Querida mía,
-
-Bienvenida a esta página especial que he creado solo para ti. Aquí podrás encontrar todas las cartas de amor que escribo para expresar lo que siento por ti.
-
-Cada palabra, cada pensamiento, cada sentimiento está dedicado a ti. Eres el amor de mi vida y quiero que tengas un lugar especial donde guardar todos nuestros momentos.
-
-Te amo más cada día.
-
-Con todo mi amor...`,
-            date: new Date().toLocaleString('es-ES'),
-            timestamp: Date.now()
-        };
-        letters.push(welcomeLetter);
-        saveLetters();
-        displayLetters();
-    }
-}
-
-// Cargar borrador guardado
-window.addEventListener('load', function() {
-    const draft = localStorage.getItem('draftLetter');
-    if (draft) {
-        loveLetter.value = draft;
-    }
-});
-
 // Guardar datos automáticamente
 window.addEventListener('beforeunload', function() {
-    saveLetters();
     savePhotos();
     saveMoments();
 });
@@ -628,5 +573,101 @@ window.addEventListener('load', function() {
     setTimeout(() => {
         document.body.style.opacity = '1';
     }, 100);
+});
+
+// Función para crear las tarjetitas de fotos
+function createPhotoCards() {
+    const photosGrid = document.getElementById('photosGrid');
+    
+    photosData.forEach(photo => {
+        const photoCard = document.createElement('div');
+        photoCard.className = 'photo-card';
+        photoCard.onclick = () => openPhotoModal(photo);
+        
+        photoCard.innerHTML = `
+            <div class="photo-image">
+                <img src="${photo.image}" alt="${photo.title}" loading="lazy">
+                <div class="photo-overlay">
+                    <i class="fas fa-heart"></i>
+                </div>
+            </div>
+            <div class="photo-info">
+                <h3 class="photo-title">${photo.title}</h3>
+                <p class="photo-date">${photo.date}</p>
+                <p class="photo-description">${photo.description}</p>
+            </div>
+        `;
+        
+        photosGrid.appendChild(photoCard);
+    });
+}
+
+// Función para abrir el modal de la foto
+function openPhotoModal(photo) {
+    const modal = document.getElementById('photoModal');
+    const modalImage = document.getElementById('modalImage');
+    const modalDate = document.getElementById('modalDate');
+    
+    modalImage.src = photo.image;
+    modalImage.alt = photo.title;
+    modalDate.textContent = `${photo.title} - ${photo.date}`;
+    
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+// Función para cerrar el modal
+function closePhotoModal() {
+    const modal = document.getElementById('photoModal');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    // Crear las tarjetitas de fotos
+    createPhotoCards();
+    
+    // Cerrar modal al hacer clic en la X
+    const closeModal = document.querySelector('.close-modal');
+    closeModal.onclick = closePhotoModal;
+    
+    // Cerrar modal al hacer clic fuera de la imagen
+    const modal = document.getElementById('photoModal');
+    modal.onclick = function(event) {
+        if (event.target === modal) {
+            closePhotoModal();
+        }
+    };
+    
+    // Cerrar modal con la tecla Escape
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closePhotoModal();
+        }
+    });
+    
+    // Efectos de animación al hacer scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+    
+    // Observar las tarjetitas de fotos
+    const photoCards = document.querySelectorAll('.photo-card');
+    photoCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = `all 0.6s ease ${index * 0.1}s`;
+        observer.observe(card);
+    });
 }); 
-checkSpecialDate(); 
