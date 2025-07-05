@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Mi Amor ❤️</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header con título romántico -->
+        <header class="header">
+            <h1 class="main-title">
+                <i class="fas fa-heart"></i>
+                Para Mi Amor
+                <i class="fas fa-heart"></i>
+            </h1>
+            <p class="subtitle">Cada día te amo más...</p>
+        </header>
+
+        <!-- Sección de mensajes -->
+        <section class="message-section">
+            <h2><i class="fas fa-pen-fancy"></i> Mis Mensajes Para Ti</h2>
+            <div class="message-container">
+                <div class="message-input-area">
+                    <textarea id="messageInput" placeholder="Escribe aquí tu mensaje de amor... 💕" maxlength="500"></textarea>
+                    <div class="message-controls">
+                        <span id="charCount">0/500</span>
+                        <button id="addMessageBtn" class="btn-primary">
+                            <i class="fas fa-plus"></i> Agregar Mensaje
+                        </button>
+                    </div>
+                </div>
+                <div id="messagesList" class="messages-list">
+                    <!-- Los mensajes se agregarán aquí dinámicamente -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de collage de fotos -->
+        <section class="photo-section">
+            <h2><i class="fas fa-images"></i> Nuestros Momentos Especiales</h2>
+            <div class="photo-upload-area">
+                <div class="upload-box" id="uploadBox">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Haz clic para agregar fotos</p>
+                    <input type="file" id="photoInput" accept="image/*" multiple>
+                </div>
+            </div>
+            <div id="photoCollage" class="photo-collage">
+                <!-- Las fotos se agregarán aquí dinámicamente -->
+            </div>
+        </section>
+
+        <!-- Sección de música romántica -->
+        <section class="music-section">
+            <h2><i class="fas fa-music"></i> Música Para Nuestro Amor</h2>
+            <div class="music-player">
+                <div class="music-controls">
+                    <button id="playBtn" class="music-btn">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button id="pauseBtn" class="music-btn">
+                        <i class="fas fa-pause"></i>
+                    </button>
+                    <button id="nextBtn" class="music-btn">
+                        <i class="fas fa-forward"></i>
+                    </button>
+                </div>
+                <div class="song-info">
+                    <span id="currentSong">Selecciona una canción romántica</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer romántico -->
+        <footer class="footer">
+            <p>Hecho con <i class="fas fa-heart"></i> para ti, mi amor</p>
+            <div class="floating-hearts" id="floatingHearts"></div>
+        </footer>
+    </div>
+
+    <!-- Modal para ver fotos -->
+    <div id="photoModal" class="modal">
+        <span class="close">&times;</span>
+        <img id="modalImage" class="modal-content">
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
